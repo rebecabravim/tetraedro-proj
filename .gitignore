@@ -1,0 +1,12 @@
+*.csproj
+*.sln
+*.slnx
+*.suo
+.vs
+.vsconfig
+/Library
+/Logs
+/obj
+/Temp
+/UserSettings
+.DS_Store
