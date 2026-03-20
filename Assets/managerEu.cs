@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using UnityEditor.PackageManager;
 using UnityEngine;
 using static TMPro.SpriteAssetUtilities.TexturePacker_JsonArray;
 
@@ -8,6 +9,12 @@ public class managerEu : MonoBehaviour {
     public GameObject tetrahedron; // prefab da camrera
     public GameObject[] vetGameObj = new GameObject[24];
     GameObject pai;
+    Vector3 eixoP0World;
+    Vector3 eixoP1World;
+    Vector3 eixoP2World;
+    Vector3 eixoP3World;
+    int[] tetraredrosMeioEixoP3 = new int[] { 3, 4, 8, 12, 18, 22 };
+    int[] tetraredrosBaseEixoP3 = new int[] { 0, 1, 2, 6, 7, 9, 10, 11, 13, 14, 15, 16, 17, 19, 20, 21 };
 
 
 
@@ -138,56 +145,22 @@ public class managerEu : MonoBehaviour {
         Vector3 P2 = new Vector3(1.5f, 0, 3 * Mathf.Sqrt(0.75f));
         Vector3 P3 = new Vector3(1.5f, 3 * Mathf.Sqrt(0.75f), (3 * Mathf.Sqrt(0.75f) / 3));
 
-        Vector3 eixoP0 = P0 - baricentro;
-        Vector3 eixoP1 = P1 - baricentro;
-        Vector3 eixoP2 = P2 - baricentro;
-        Vector3 eixoP3 = P3 - baricentro; // esse é o Eixo Vertical
-        
+        Vector3 eixoP0 = (P0 - baricentro).normalized;
+        eixoP0World = eixoP0.normalized;
+        Vector3 eixoP1 = (P1 - baricentro).normalized;
+        eixoP1World = eixoP1.normalized;
+        Vector3 eixoP2 = (P2 - baricentro).normalized;
+        eixoP2World = eixoP2.normalized;
+        Vector3 eixoP3 = (P3 - baricentro).normalized; // esse é o Eixo Vertical
+        eixoP3World = eixoP3.normalized;
 
-
-        // Quero rodar um tetraedro em volta de si mesmo, logo preciso rotacioná-lo em torno de seu próprio baricentro
-        Vector3[] verticesLocalT1 = vetGameObj[1].GetComponent<criarTetra>().getVectors();
-        Vector3 baricentroLocalT1 = CalcularBaricentroLocal(verticesLocalT1);
-        Vector3 baricentroWorldT1 = vetGameObj[1].transform.TransformPoint(baricentroLocalT1); // tem que transformar valores locais para globais
-        pai.transform.position = baricentroWorldT1;
-        vetGameObj[1].transform.parent = pai.transform;
-        pai.transform.Rotate(Vector3.up, 120f);
-
-        // Quero rodar o tetraedro de cima em torno do Eixo Vertical (eixoP3)
-        Vector3 eixoP3World = eixoP3.normalized;
-        Vector3[] verticesLocalT5 = vetGameObj[5].GetComponent<criarTetra>().getVectors();
-        Vector3 baricentroLocalT5 = CalcularBaricentroLocal(verticesLocalT5);
-        Vector3 baricentroWorldT5 = vetGameObj[5].transform.TransformPoint(baricentroLocalT5);
-        vetGameObj[5].transform.RotateAround(
-            baricentroWorldT5,
-            eixoP3World,
-            120f
-            );
-
-        // Quero rodar o tetraedro da ponta da esquerda em torno do EixoP0
-        Vector3 eixoP0World = eixoP0.normalized;
-        Vector3[] verticesLocalT0 = vetGameObj[0].GetComponent<criarTetra>().getVectors();
-        Vector3 baricentroLocalT0 = CalcularBaricentroLocal(verticesLocalT0);
-        Vector3 baricentroWorldT0 = vetGameObj[0].transform.TransformPoint(baricentroLocalT0);
-        vetGameObj[0].transform.RotateAround(
-            baricentroWorldT0,
-            eixoP0World,
-            120f
-            );
-
-
-        // PARTE 2: 12 CENTROS, 3 P/ CADA EIXO: TOPO, MEIO, BASE ============================================================
-        // Centros do Eixo Vertical (eixoP3)
-
-
-        // PARTE 3: COMPUTAR O PLANO QUE PASSA PELO MEIO DO TOPO, MEIO E BASE P/ CADA EIXO ==================================
-
-        // PARTE 4 ==========================================================================================================
+        // comentado, pois estou chamando a função no update
+        //RotacionarGrupoEmTornoDoEixoQuePassaNoBaricentroDoGrupo(tetraredrosBaseEixoP3, 120, eixoP3World);
 
 
     }
 
-    // codigo do professor
+    // Baricentro local do tetraedro = média dos 4 vértices locais.
     private Vector3 CalcularBaricentroLocal(Vector3[] verticesLocal)
     {
         if (verticesLocal == null || verticesLocal.Length != 4)
@@ -206,8 +179,78 @@ public class managerEu : MonoBehaviour {
         return soma / 4f;
     }
 
+    // Retorna o baricentro do tetraedro em coordenadas globais.
+    private Vector3 CalcularBaricentroWorld(GameObject tetra)
+    {
+        criarTetra ct = tetra.GetComponent<criarTetra>();
+        if (ct == null)
+        {
+            Debug.LogError("O GameObject " + tetra.name + " não possui createTetra.");
+            return Vector3.zero;
+        }
+
+        Vector3[] verticesLocal = ct.getVectors();
+        Vector3 baricentroLocal = CalcularBaricentroLocal(verticesLocal);
+
+        return tetra.transform.TransformPoint(baricentroLocal);
+    }
+
+    // Calcula o baricentro da lista de tetraedros.
+    // Como todos são tetraedros equivalentes, usamos a média
+    // dos baricentros globais dos tetraedros do grupo.
+    public Vector3 CalcularBaricentroListaTetraedros(int[] indices)
+    {
+        Vector3 soma = Vector3.zero;
+        int totalValidos = 0;
+
+        for (int i = 0; i < indices.Length; i++)
+        {
+            int idx = indices[i];
+
+            soma += CalcularBaricentroWorld(vetGameObj[idx]);
+            totalValidos++;
+
+        }
+
+        if (totalValidos == 0)
+        {
+            Debug.LogError("Nenhum tetraedro válido foi encontrado no grupo.");
+            return Vector3.zero;
+        }
+
+        return soma / totalValidos;
+    }
+
+    // Rotaciona o grupo em torno de um eixo que passa pelo baricentro da lista de tetraedros
+    public void RotacionarGrupoEmTornoDoEixoQuePassaNoBaricentroDoGrupo(int[] indices, float anguloGraus, Vector3 eixo)
+    {
+
+        // Ponto por onde o eixo passa
+        Vector3 baricentroGrupo = CalcularBaricentroListaTetraedros(indices);
+
+        // Rotaciona todos os tetraedros do grupo ao redor desse eixo
+        for (int i = 0; i < indices.Length; i++)
+        {
+            int idx = indices[i];
+            vetGameObj[idx].transform.RotateAround(
+                baricentroGrupo,
+                eixo,
+                anguloGraus
+            );
+
+        }
+    }
+
     // Update is called once per frame
     void Update () {
-
+        //aqui chama rotacionar 
+        RotacionarGrupoEmTornoDoEixoQuePassaNoBaricentroDoGrupo(
+                                                                tetraredrosBaseEixoP3,
+                                                                30f * Time.deltaTime,
+                                                                eixoP3World);
+        RotacionarGrupoEmTornoDoEixoQuePassaNoBaricentroDoGrupo(
+                                                                tetraredrosMeioEixoP3,
+                                                                40f * Time.deltaTime,
+                                                                eixoP3World);
     }
 }
