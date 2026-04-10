@@ -9,7 +9,7 @@ using static TMPro.SpriteAssetUtilities.TexturePacker_JsonArray;
 public class managerEu : MonoBehaviour {
 
     public GameObject tetrahedron; // prefab da camrera
-    public GameObject[] vetGameObj = new GameObject[24];
+    public GameObject[] vetGameObj = new GameObject[22];
     public GameObject plano;
 
     GameObject planoTP0;
@@ -64,7 +64,7 @@ public class managerEu : MonoBehaviour {
 
 
 
-        for (int i=0; i < 24; i++)
+        for (int i=0; i < 22; i++)
         {
             if(i == 0)
             {
@@ -210,6 +210,26 @@ public class managerEu : MonoBehaviour {
         planoMP3 = Instantiate(plano, CalcularBaricentroListaTetraedros(tetraredrosMeioEixoP3), Quaternion.identity);
         planoBP3 = Instantiate(plano, CalcularBaricentroListaTetraedros(tetraredrosBaseEixoP3), Quaternion.identity);
 
+        // DEIXA OS PLANOS INVISIVEIS
+        planoTP0.GetComponent<Renderer>().enabled = false;
+        planoMP0.GetComponent<Renderer>().enabled = false;
+        planoBP0.GetComponent<Renderer>().enabled = false;
+
+        planoTP1.GetComponent<Renderer>().enabled = false;
+        planoMP1.GetComponent<Renderer>().enabled = false;
+        planoBP1.GetComponent<Renderer>().enabled = false;
+
+        planoTP2.GetComponent<Renderer>().enabled = false;
+        planoMP2.GetComponent<Renderer>().enabled = false;
+        planoBP2.GetComponent<Renderer>().enabled = false;
+
+        planoTP3.GetComponent<Renderer>().enabled = false;
+        planoMP3.GetComponent<Renderer>().enabled = false;
+        planoBP3.GetComponent<Renderer>().enabled = false;
+
+
+
+
 
 
 
@@ -317,60 +337,139 @@ public class managerEu : MonoBehaviour {
     {
         // ===== EIXO P0 =====
         if (Input.GetKeyDown(KeyCode.F1))
-            RotacionarGrupoEmTornoDoEixoQuePassaNoBaricentroDoGrupo(tetraredrosBaseEixoP0, 120f, eixoP0World);
+        {
+            List<int> grupo = TetraedrosNoPlano(planoBP0);
+            RotacionarGrupoEmTornoDoEixoQuePassaNoBaricentroDoGrupo(grupo.ToArray(), 120f, eixoP0World);
+            //RotacionarGrupoEmTornoDoEixoQuePassaNoBaricentroDoGrupo(tetraredrosBaseEixoP0, 120f, eixoP0World);
+        }
 
         if (Input.GetKeyDown(KeyCode.F2))
-            RotacionarGrupoEmTornoDoEixoQuePassaNoBaricentroDoGrupo(tetraredrosMeioEixoP0, 120f, eixoP0World);
+        {
+            List<int> grupo = TetraedrosNoPlano(planoMP0);
+            RotacionarGrupoEmTornoDoEixoQuePassaNoBaricentroDoGrupo(grupo.ToArray(), 120f, eixoP0World);
+            //RotacionarGrupoEmTornoDoEixoQuePassaNoBaricentroDoGrupo(tetraredrosMeioEixoP0, 120f, eixoP0World);
+        }
 
         if (Input.GetKeyDown(KeyCode.F3))
-            RotacionarGrupoEmTornoDoEixoQuePassaNoBaricentroDoGrupo(tetraredrosTopoEixoP0, 120f, eixoP0World);
+        {
+            List<int> grupo = TetraedrosNoPlano(planoTP0);
+            RotacionarGrupoEmTornoDoEixoQuePassaNoBaricentroDoGrupo(grupo.ToArray(), 120f, eixoP0World);
+            //RotacionarGrupoEmTornoDoEixoQuePassaNoBaricentroDoGrupo(tetraredrosTopoEixoP0, 120f, eixoP0World);
+        }
 
 
         // ===== EIXO P1 =====
         if (Input.GetKeyDown(KeyCode.F4))
-            RotacionarGrupoEmTornoDoEixoQuePassaNoBaricentroDoGrupo(tetraredrosBaseEixoP1, 120f, eixoP1World);
+        {
+            List<int> grupo = TetraedrosNoPlano(planoBP1);
+            RotacionarGrupoEmTornoDoEixoQuePassaNoBaricentroDoGrupo(grupo.ToArray(), 120f, eixoP1World);
+            //RotacionarGrupoEmTornoDoEixoQuePassaNoBaricentroDoGrupo(tetraredrosBaseEixoP1, 120f, eixoP1World);
+        }
 
         if (Input.GetKeyDown(KeyCode.F5))
-            RotacionarGrupoEmTornoDoEixoQuePassaNoBaricentroDoGrupo(tetraredrosMeioEixoP1, 120f, eixoP1World);
+        {
+            List<int> grupo = TetraedrosNoPlano(planoMP1);
+            RotacionarGrupoEmTornoDoEixoQuePassaNoBaricentroDoGrupo(grupo.ToArray(), 120f, eixoP1World);
+            //RotacionarGrupoEmTornoDoEixoQuePassaNoBaricentroDoGrupo(tetraredrosMeioEixoP1, 120f, eixoP1World);
+        }
 
         if (Input.GetKeyDown(KeyCode.F6))
-            RotacionarGrupoEmTornoDoEixoQuePassaNoBaricentroDoGrupo(tetraredrosTopoEixoP1, 120f, eixoP1World);
+        {
+            List<int> grupo = TetraedrosNoPlano(planoTP1);
+            RotacionarGrupoEmTornoDoEixoQuePassaNoBaricentroDoGrupo(grupo.ToArray(), 120f, eixoP1World);
+            //RotacionarGrupoEmTornoDoEixoQuePassaNoBaricentroDoGrupo(tetraredrosTopoEixoP1, 120f, eixoP1World);
+        }
 
 
         // ===== EIXO P2 =====
         if (Input.GetKeyDown(KeyCode.F7))
-            RotacionarGrupoEmTornoDoEixoQuePassaNoBaricentroDoGrupo(tetraredrosBaseEixoP2, 120f, eixoP2World);
+        {
+            List<int> grupo = TetraedrosNoPlano(planoBP2);
+            RotacionarGrupoEmTornoDoEixoQuePassaNoBaricentroDoGrupo(grupo.ToArray(), 120f, eixoP2World);
+            //RotacionarGrupoEmTornoDoEixoQuePassaNoBaricentroDoGrupo(tetraredrosBaseEixoP2, 120f, eixoP2World);
+        }
 
         if (Input.GetKeyDown(KeyCode.F8))
-            RotacionarGrupoEmTornoDoEixoQuePassaNoBaricentroDoGrupo(tetraredrosMeioEixoP2, 120f, eixoP2World);
+        {
+            List<int> grupo = TetraedrosNoPlano(planoMP2);
+            RotacionarGrupoEmTornoDoEixoQuePassaNoBaricentroDoGrupo(grupo.ToArray(), 120f, eixoP2World);
+            //RotacionarGrupoEmTornoDoEixoQuePassaNoBaricentroDoGrupo(tetraredrosMeioEixoP2, 120f, eixoP2World);
+        }
 
         if (Input.GetKeyDown(KeyCode.F9))
-            RotacionarGrupoEmTornoDoEixoQuePassaNoBaricentroDoGrupo(tetraredrosTopoEixoP2, 120f, eixoP2World);
-
-
-        // ===== EIXO P3 =====
-        if (Input.GetKeyDown(KeyCode.F10))
-            RotacionarGrupoEmTornoDoEixoQuePassaNoBaricentroDoGrupo(tetraredrosBaseEixoP3, 120f, eixoP3World);
-
-        if (Input.GetKeyDown(KeyCode.F11))
-            RotacionarGrupoEmTornoDoEixoQuePassaNoBaricentroDoGrupo(tetraredrosMeioEixoP3, 120f, eixoP3World);
-
-        if (Input.GetKeyDown(KeyCode.F12))
-            RotacionarGrupoEmTornoDoEixoQuePassaNoBaricentroDoGrupo(tetraredrosTopoEixoP3, 120f, eixoP3World);
-    }
-
-    int[] TeatraedrosNoPlano(GameObject plano) 
-    {
-        int[] tetraedros = new int[] { };
-
-        foreach (GameObject tetraedro in vetGameObj) 
-        { 
-            //if (tetraedro != plano)
-
+        {
+            List<int> grupo = TetraedrosNoPlano(planoTP2);
+            RotacionarGrupoEmTornoDoEixoQuePassaNoBaricentroDoGrupo(grupo.ToArray(), 120f, eixoP2World);
+            //RotacionarGrupoEmTornoDoEixoQuePassaNoBaricentroDoGrupo(tetraredrosTopoEixoP2, 120f, eixoP2World);
         }
 
 
-        return new int[] { };
+        // ===== EIXO P3 =====
+
+        if (Input.GetKeyDown(KeyCode.F10))
+        {
+            List<int> grupo = TetraedrosNoPlano(planoBP3);
+            RotacionarGrupoEmTornoDoEixoQuePassaNoBaricentroDoGrupo(grupo.ToArray(), 120f, eixoP3World);
+            //RotacionarGrupoEmTornoDoEixoQuePassaNoBaricentroDoGrupo(tetraredrosBaseEixoP3, 120f, eixoP3World);
+        }
+
+        if (Input.GetKeyDown(KeyCode.F11))
+        {
+            List<int> grupo = TetraedrosNoPlano(planoMP3);
+            RotacionarGrupoEmTornoDoEixoQuePassaNoBaricentroDoGrupo(grupo.ToArray(), 120f, eixoP3World);
+            //RotacionarGrupoEmTornoDoEixoQuePassaNoBaricentroDoGrupo(tetraredrosMeioEixoP3, 120f, eixoP3World);
+        }
+
+        if (Input.GetKeyDown(KeyCode.F12))
+        {
+            List<int> grupo = TetraedrosNoPlano(planoTP3);
+            RotacionarGrupoEmTornoDoEixoQuePassaNoBaricentroDoGrupo(grupo.ToArray(), 120f, eixoP3World);
+            RotacionarGrupoEmTornoDoEixoQuePassaNoBaricentroDoGrupo(tetraredrosTopoEixoP3, 120f, eixoP3World);
+        }
     }
-    
+
+    List<int> TetraedrosNoPlano(GameObject plano)
+    {
+        Plane plane = new Plane(plano.transform.up, plano.transform.position);
+
+        List<int> resultado = new List<int>();
+
+        for (int i = 0; i < vetGameObj.Length; i++)
+        {
+            GameObject tetra = vetGameObj[i];
+
+            createTetra ct = tetra.GetComponent<createTetra>();
+            Vector3[] verticesLocal = ct.getVectors();
+
+            int positivos = 0;
+            int negativos = 0;
+
+            for (int j = 0; j < verticesLocal.Length; j++)
+            {
+                Vector3 verticeWorld = tetra.transform.TransformPoint(verticesLocal[j]);
+
+                float distancia = plane.GetDistanceToPoint(verticeWorld);
+
+                if (distancia > 0.001f)
+                    positivos++;
+                else if (distancia < -0.001f)
+                    negativos++;
+            }
+
+            // Se tem vértices dos dois lados → intersecta o plano
+            if (positivos > 0 && negativos > 0)
+            {
+                resultado.Add(i);
+            }
+        }
+
+        Debug.Log("Grupo:");
+        foreach (int i in resultado)
+        {
+            Debug.Log(i);
+        }
+        return resultado;
+    }
+
+
 }
